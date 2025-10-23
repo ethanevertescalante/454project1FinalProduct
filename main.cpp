@@ -6,6 +6,10 @@
 using namespace std;
 
 int main() {
+
+
+
+
     cout << "Building DFA L...\n";
     DFA dfaL;
     dfaL = dfaL.buildDfaL();
@@ -80,7 +84,21 @@ int main() {
                      << "\nNumber of strings = " << result.get_str() << "\n\n";
             }
         }else if(choice == 3){
-            cout << "under construction...\n";
+            long long q;
+            int j;
+            cout << "Enter an integer number ( 0 to 1366^2 -1) : " << endl;
+            cin >> q;
+            cout << "Enter input symbol j (0=a, 1=b , 2=c, 3=d) : ";
+            cin >> j;
+
+            if(q < 0 || q > 1366 * 1366 -1||j < 0 || j > 3){
+              cout << "Invalid input q must be between 0 and 1366^2 -1 and j must be in {0,1,2,3}" << endl;
+              }else{
+
+                int next = Mp.getNextState(Mp, (int)q,j);
+                cout << "Next state is : " << next << endl;
+
+                }
         }
         else if(choice == 4){
             cout << "Exiting Execution...";

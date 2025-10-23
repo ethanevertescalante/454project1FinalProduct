@@ -1,16 +1,27 @@
 #include "DFA.hpp"
 #include "Buffer.hpp"
 
+
+// Pre: 0 <= state < numStates, 0 <= symbol < sigma, transitions sized properly
+// getNextState: returns δ(state, symbol)
+// Inputs: state∈[0,numStates), symbol∈[0,sigma)
+// Output: next state index (by reference)
+// Example: int next = dfa.getNextState(dfa, 2, 1);
 int& DFA::getNextState(DFA& dfa,int state, int symbol){
     return transitions[state * sigma + symbol];
 }
-
+// Pre: 0 <= state < numStates, symbolA is encoding for 'a' (usually 0)
+// getNextStateOfAA:  return δ(δ(state,'a'),'a')
+// Example: int next = M.getNextStateOfAA(M, s, 0);
 int& DFA::getNextStateOfAA(DFA& M, int state, int symbolA) {
     //go to the first 'a', then go to the subsequent 'a' ('aa')
     int stateA = M.getNextState(M, state, symbolA);
     return M.getNextState(M,stateA, symbolA);
 }
 
+// Pre: subString.size() == 6, each entry in {0,1,2,3}
+// Post: returns true if all four symbols appear in subString
+// areAllFourCharsInSubString: returns true if substring has {0,1,2,3}
 bool DFA::areAllFourCharsInSubString(vector<int>& subString){
     vector<bool> seenChars(4, false);
     for(int i = 0; i < 6; i++) seenChars[subString[i]] = true;
@@ -19,6 +30,11 @@ bool DFA::areAllFourCharsInSubString(vector<int>& subString){
     return seenChars[0] && seenChars[1] && seenChars[2] && seenChars[3];
 }
 
+
+
+// Pre: BufferIndex helpers valid (makeBufferIndex, encodeBase4, decodeBase4)
+// Post: builds DFA L with sigma=4, transitions, accept, and startState initialize
+// buildDfaL: builds DFA L (σ=4) that rejects any 6-window missing {a,b,c,d}
 DFA DFA::buildDfaL(){
     //this is the constructor, just in a separate method
 
@@ -75,6 +91,10 @@ DFA DFA::buildDfaL(){
 
 }
 
+// Pre: L is fully built, 0 <= state < L.numStates, symbolA valid in L’s alphabet
+// Post: builds DFA Mp (numStates = L.numStates², sigma = 16) with transitions filled
+// buildMp: builds product DFA Mp (|Q|², σ=16)
+// symbol = l*4+z encodes pair of inputs
 DFA DFA::buildMp(DFA &L, int state, int symbolA) {
     //I could get rid of the DFA parameter here since the instance of the object I created is still available via <this>
     //std::cout << this->numStates << "\n";
@@ -115,6 +135,10 @@ DFA DFA::buildMp(DFA &L, int state, int symbolA) {
     return Mp;
 }
 
+
+// Pre: dfa built, n >= 0
+// countAcceptedStrings: counts accepted strings of length n
+// Example: dfa.countAcceptedStrings(dfa, 5);
 mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
     if(n < 0) return 0; //just in case (even though the input on main is also protected)
 
@@ -139,6 +163,8 @@ mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
 
 }
 
+// Pre: M built, n even and >= 2, symbolA valid (usually 0)
+// countEvenWithMiddleAA_fast: counts and returns even-length accepted strings with middle "aa"
 mpz_class DFA::countEvenWithMiddleAA_fast(DFA& M, int n, int symbolA) {
     if (n % 2 != 0 || n < 2) return 0;
     int m = n / 2, len = m - 1;

@@ -20,12 +20,12 @@ public:
     mpz_class countAcceptedStrings(DFA& dfa, int n);
     int& getNextState(DFA& dfa,int state, int symbol);
     int& getNextStateOfAA(DFA& M, int state, int symbolA);
-    int getNumStates(){
-        return numStates;
-    }
-    int getAccepting(int i){
-        return accept[i];
-    }
+    // Post: returns total number of states in the DFA
+    int getNumStates(){return numStates;}
+    // Pre: 0 <= i < numStates
+    // Post: returns 1 if state i is accepting, 0 otherwise
+    int getAccepting(int i){return accept[i];
+   }
     mpz_class countEvenWithMiddleAA_fast(DFA& M, int n, int symbolA);
 
 
